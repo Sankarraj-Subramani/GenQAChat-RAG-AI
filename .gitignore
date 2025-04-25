@@ -4,4 +4,12 @@ frontend/.next/
 backend/app/__pycache__/
 vectorstore.pkl
 models/
-
+node_modules/
+.next/
+models/
+vectorstore.pkl
+__pycache__/
+.DS_Store
+.env
+*.log
+git 
