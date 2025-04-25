@@ -1,7 +1,7 @@
 # GenQAChat-RAG-AI
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Sankarraj-Subramani/GenQAChat-RAG-AI/[![Screenshot-2025-04-25-at-1-28-45-PM.png](https://i.postimg.cc/qqp9RSF2/Screenshot-2025-04-25-at-1-28-45-PM.png)](https://postimg.cc/7GQBtswL)" alt="GenQAChat Logo" width="200"/>
+  <img src="(https://i.postimg.cc/qqp9RSF2/Screenshot-2025-04-25-at-1-28-45-PM.png)](https://postimg.cc/7GQBtswL)" alt="GenQAChat Logo" width="200"/>
 </p>
 
 **An AI-Powered Chatbot Assistant for QA Engineers**  
