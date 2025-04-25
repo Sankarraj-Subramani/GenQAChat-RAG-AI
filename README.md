@@ -1,7 +1,9 @@
+# README.md
+
 # GenQAChat-RAG-AI
 
 <p align="center">
-  <img src="https://i.postimg.cc/qqp9RSF2/Screenshot-2025-04-25-at-1-28-45-PM.png)](https://postimg.cc/7GQBtswL" alt="GenQAChat Logo" width="200"/>
+  <img src="https://i.postimg.cc/qqp9RSF2/Screenshot-2025-04-25-at-1-28-45-PM.png" alt="GenQAChat Logo" width="200"/>
 </p>
 
 **An AI-Powered Chatbot Assistant for QA Engineers**  
@@ -16,38 +18,38 @@ Created by [Sankarraj Subramani](https://github.com/Sankarraj-Subramani)
 **GenQAChat-RAG-AI** is a Generative AI-based chatbot built to assist QA engineers and automation testers with domain-specific questions.
 
 It leverages:
-- **LangChain** to structure LLM interactions  
-- **OpenAI (GPT-4)** for natural language understanding  
-- **ChromaDB** for fast semantic search over QA documentation  
-- **RAG (Retrieval-Augmented Generation)** to make the LLM responses accurate and grounded
+- **LangChain** to structure QA retrievals
+- **HuggingFace Sentence Transformers** for local embeddings (No OpenAI API needed!)
+- **FAISS VectorStore** for semantic search
+- **FastAPI** backend and **Next.js** frontend
 
 ---
 
 ## 💡 Example Use Cases
 
 Ask your assistant:
-- “How to write an XPath for a dynamic modal popup?”  
-- “Steps to configure Jenkins pipeline with GitHub?”  
-- “What’s the best way to implement page object model in Selenium?”
+- "How to write an XPath for a dynamic modal popup?"
+- "Steps to configure Jenkins pipeline with GitHub?"
+- "What’s the best way to implement page object model in Selenium?"
 
 ---
 
 ## 🔧 Tech Stack
 
 | Layer         | Tech                     |
-|---------------|--------------------------|
-| Backend       | FastAPI, LangChain       |
-| AI Model      | OpenAI GPT-4             |
-| Vector DB     | ChromaDB (embeddings)    |
+|---------------|---------------------------|
+| Backend       | FastAPI, LangChain         |
+| Embeddings    | HuggingFace MiniLM         |
+| Vector Store  | FAISS (local)              |
 | Frontend      | Next.js, React, TailwindCSS |
-| Deployment    | GitHub Codespaces-ready  |
+| Deployment    | GitHub Codespaces-ready    |
 
 ---
 
 ## ⚙️ Architecture
 
 ```
- ┌─────────────────────────────────────────────────────┐
+     ┌─────────────────────────────────────────────────────┐
          ┌────────────────────────────┐
          │     Next.js Frontend UI    │
          └────────────┬───────────────┘
@@ -56,15 +58,14 @@ Ask your assistant:
           REST API (FastAPI backend)
                       │
                       ▼
-    LangChain QA Chain + OpenAI API
+    LangChain Retriever + HuggingFace Embeddings
                       │
                       ▼
-         ChromaDB (QA Vector Store)
+         FAISS VectorStore (Semantic Search)
                       │
                       ▼
-       Embedded QA Knowledge Base
+       Embedded QA Knowledge Base (Markdown/Text)
  └─────────────────────────────────────────────────────┘
-
 ```
 
 ---
@@ -89,6 +90,7 @@ Click the badge above ☝️ or visit:
 ```bash
 cd backend
 pip install -r requirements.txt
+python app/rag_chain.py    # ➡️ builds vectorstore.pkl
 uvicorn app.main:app --reload
 ```
 
@@ -99,17 +101,13 @@ npm install
 npm run dev
 ```
 
-### 4. Add OpenAI API Key
+### 4. No OpenAI Key Needed
 
-Create a `.env` file inside the `backend/` folder:
-
-```env
-OPENAI_API_KEY=your-openai-key-here
-```
+This version uses **local HuggingFace embeddings** — no external API keys required!
 
 ---
 
-## 🧹 Folder Structure
+## 🪩 Folder Structure
 
 ```
 GenQAChat-RAG-AI/
@@ -120,37 +118,40 @@ GenQAChat-RAG-AI/
 │   └── requirements.txt
 ├── frontend/
 │   ├── pages/
-│   ├── components/
+│   │   └── index.tsx
 │   └── ...
 ├── knowledge_base/
-│   ├── xpaths.txt
 │   ├── selenium.md
-│   └── jenkins_pipeline.txt
+│   ├── appium.md
+│   ├── cypress.md
+│   ├── playwright.md
+│   ├── jenkins.md
+│   └── xpaths.md
 └── README.md
 ```
 
 ---
 
-## 🧠 Knowledge Base
+## 🧐 Knowledge Base
 
-All your QA knowledge lives inside the `knowledge_base/` folder.
+All QA knowledge lives inside `knowledge_base/` folder:
+- Selenium
+- Appium
+- Cypress
+- Playwright
+- Jenkins Pipelines
+- XPath Best Practices
 
-You can add:
-- Automation FAQs  
-- XPath tricks  
-- Setup/config guides  
-- Selenium/Cypress/Appium tutorials
-
-These files are embedded into ChromaDB for semantic search and intelligent LLM-powered answers.
+These markdown files are **embedded into FAISS** for real-time QA answering.
 
 ---
 
-## 🔪 Built With
+## 🛠️ Built With
 
 - [FastAPI](https://fastapi.tiangolo.com/)
 - [LangChain](https://www.langchain.com/)
-- [ChromaDB](https://www.trychroma.com/)
-- [OpenAI GPT-4](https://platform.openai.com/)
+- [FAISS](https://faiss.ai/)
+- [HuggingFace Transformers](https://huggingface.co/docs/transformers/index)
 - [Next.js](https://nextjs.org/)
 
 ---
@@ -158,17 +159,15 @@ These files are embedded into ChromaDB for semantic search and intelligent LLM-p
 ## 🏆 Contributions
 
 Contributions are welcome!
-
-You can:
-- Add new markdown/text files to the knowledge base  
-- Suggest UI/UX improvements  
-- Propose new features (e.g., file upload, code analysis, voice input)
+- Add new knowledge base markdowns
+- Improve UI/UX
+- Suggest features like multiple file uploads, authentication
 
 ---
 
 ## 📄 License
 
-MIT License – free to use, modify, and distribute.
+Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 
@@ -178,5 +177,8 @@ MIT License – free to use, modify, and distribute.
 QA Automation Lead | AI/ML Enthusiast | EB2-NIW/EB1A Aspirant  
 [GitHub](https://github.com/Sankarraj-Subramani) • [LinkedIn](https://www.linkedin.com/in/sankarraj-subramani-34254757)
 
-> 🌛 If you like this project, star it on GitHub and share it with your QA and AI community!
+> If you like this project, kindly star the repo and share with the QA + AI community! ⭐
+
+
+---
 

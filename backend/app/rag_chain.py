@@ -1,31 +1,69 @@
-from langchain.document_loaders import TextLoader
-from langchain.vectorstores import Chroma
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.text_splitter import CharacterTextSplitter
+import nltk
+nltk.download('punkt')
+
 import os
+import pickle
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.document_loaders import DirectoryLoader, UnstructuredMarkdownLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
 
-def seed_chromadb():
-    persist_directory = "db"
-    source_dir = "../knowledge_base/"
-    embeddings = OpenAIEmbeddings()
-    texts = []
+# --------------------------
+# CONFIGURATION
+# --------------------------
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+DATA_DIR = os.path.join(ROOT_DIR, "knowledge_base")
+EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
+EMBEDDING_CACHE_DIR = os.path.join(ROOT_DIR, "models")
+CHUNK_SIZE = 500
+CHUNK_OVERLAP = 100
+VECTORSTORE_FILE = os.path.join(ROOT_DIR, "vectorstore.pkl")
 
-    for filename in os.listdir(source_dir):
-        loader = TextLoader(os.path.join(source_dir, filename))
-        docs = loader.load()
-        splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
-        texts.extend(splitter.split_documents(docs))
-
-    vectordb = Chroma.from_documents(
-        documents=texts,
-        embedding=embeddings,
-        persist_directory=persist_directory,
+# --------------------------
+# LOAD AND SPLIT DOCUMENTS
+# --------------------------
+def load_and_split_documents():
+    loader = DirectoryLoader(
+        path=DATA_DIR,
+        glob="**/*.md",  # Change to "*.txt" if needed
+        loader_cls=UnstructuredMarkdownLoader,
+        show_progress=True
     )
-    vectordb.persist()
-    
-def get_answer(question: str) -> str:
-    # Basic example placeholder logic
-    return f"You asked: {question} — I’ll get smarter soon!"
+    documents = loader.load()
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=CHUNK_SIZE,
+        chunk_overlap=CHUNK_OVERLAP
+    )
+    return splitter.split_documents(documents)
 
+# --------------------------
+# EMBED DOCUMENTS
+# --------------------------
+def embed_documents(documents, embeddings_model):
+    texts = [doc.page_content for doc in documents]
+    embeddings = embeddings_model.embed_documents(texts)
+    return embeddings
+
+# --------------------------
+# SAVE VECTORSTORE
+# --------------------------
+def save_vectorstore(embeddings, documents):
+    with open(VECTORSTORE_FILE, "wb") as f:
+        pickle.dump((embeddings, documents), f)
+    print(f"✅ Vectorstore saved at {VECTORSTORE_FILE}")
+
+# --------------------------
+# MAIN
+# --------------------------
 if __name__ == "__main__":
-    seed_chromadb()
+    print("🔄 Loading documents and generating embeddings...")
+
+    documents = load_and_split_documents()
+    embeddings_model = HuggingFaceEmbeddings(
+        model_name=EMBEDDING_MODEL_NAME,
+        cache_folder=EMBEDDING_CACHE_DIR
+    )
+    embeddings = embed_documents(documents, embeddings_model)
+
+    save_vectorstore(embeddings, documents)

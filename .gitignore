@@ -1,2 +1,7 @@
-node_modules/
-backend/.env
+
+# Ignore build artifacts
+frontend/.next/
+backend/app/__pycache__/
+vectorstore.pkl
+models/
+

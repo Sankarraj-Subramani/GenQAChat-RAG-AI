@@ -1,3 +1,0 @@
-- Install Jenkins and Git plugin
-- Create pipeline job
-- Use Jenkinsfile for CI/CD integration

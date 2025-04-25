@@ -1,3 +1,0 @@
-//input[@type='text']
-//button[contains(text(),'Submit')]
-//div[@class='modal']
