@@ -1,7 +1,7 @@
 import os
 import pickle
 import numpy as np
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from langchain_community.embeddings import HuggingFaceEmbeddings
@@ -18,52 +18,60 @@ EMBEDDING_CACHE_DIR = os.path.join(ROOT_DIR, "models")
 # --------------------------
 # LOAD VECTORSTORE
 # --------------------------
-with open(VECTORSTORE_FILE, "rb") as f:
-    stored_embeddings, stored_documents = pickle.load(f)
+try:
+    with open(VECTORSTORE_FILE, "rb") as f:
+        stored_embeddings, stored_documents = pickle.load(f)
+except FileNotFoundError:
+    raise RuntimeError(
+        f"❗ vectorstore.pkl not found at {VECTORSTORE_FILE}. Please run rag_chain.py to generate it."
+    )
 
+# --------------------------
+# EMBEDDING MODEL INIT
+# --------------------------
 embeddings_model = HuggingFaceEmbeddings(
     model_name=EMBEDDING_MODEL_NAME,
     cache_folder=EMBEDDING_CACHE_DIR
 )
 
 # --------------------------
-# FASTAPI SERVER
+# FASTAPI APP SETUP
 # --------------------------
 app = FastAPI()
 
-# ✅ CORS Middleware for allowing frontend requests
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # You can restrict this to just your frontend URL in production
+    allow_origins=["*"],  # Change to specific domain in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # --------------------------
-# HEALTH CHECK ENDPOINT
+# HEALTH CHECK
 # --------------------------
 @app.get("/")
-def root():
-    return {"message": "GenQAChat backend is running"}
+def health_check():
+    return {"message": "✅ GenQAChat backend is running!"}
 
 # --------------------------
-# QUERY ENDPOINT
+# ASK API ENDPOINT
 # --------------------------
 class QueryRequest(BaseModel):
-    question: str
+    query: str
 
-@app.post("/query")
-def query(request: QueryRequest):
-    query_text = request.question
-    query_embedding = embeddings_model.embed_query(query_text)
+@app.post("/api/ask")
+def ask(request: QueryRequest):
+    if not request.query:
+        raise HTTPException(status_code=400, detail="Query cannot be empty.")
 
+    query_embedding = embeddings_model.embed_query(request.query)
     similarities = cosine_similarity([query_embedding], stored_embeddings)[0]
-    top_index = np.argmax(similarities)
+    top_index = int(np.argmax(similarities))
     top_document = stored_documents[top_index]
 
     return {
-        "query": query_text,
+        "query": request.query,
         "answer": top_document.page_content.strip(),
         "similarity_score": float(similarities[top_index])
     }

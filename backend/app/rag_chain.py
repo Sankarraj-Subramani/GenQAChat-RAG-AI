@@ -3,11 +3,11 @@ nltk.download('punkt')
 
 import os
 import pickle
+import numpy as np
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.document_loaders import DirectoryLoader, UnstructuredMarkdownLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
 
 # --------------------------
 # CONFIGURATION
@@ -26,16 +26,20 @@ VECTORSTORE_FILE = os.path.join(ROOT_DIR, "vectorstore.pkl")
 def load_and_split_documents():
     loader = DirectoryLoader(
         path=DATA_DIR,
-        glob="**/*.md",  # Change to "*.txt" if needed
+        glob="**/*.md",
         loader_cls=UnstructuredMarkdownLoader,
         show_progress=True
     )
     documents = loader.load()
+    print(f"✅ Loaded {len(documents)} documents.")
+
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=CHUNK_SIZE,
         chunk_overlap=CHUNK_OVERLAP
     )
-    return splitter.split_documents(documents)
+    chunks = splitter.split_documents(documents)
+    print(f"✅ Split into {len(chunks)} chunks.")
+    return chunks
 
 # --------------------------
 # EMBED DOCUMENTS
@@ -43,6 +47,7 @@ def load_and_split_documents():
 def embed_documents(documents, embeddings_model):
     texts = [doc.page_content for doc in documents]
     embeddings = embeddings_model.embed_documents(texts)
+    print("✅ Embeddings generated.")
     return embeddings
 
 # --------------------------
@@ -54,10 +59,10 @@ def save_vectorstore(embeddings, documents):
     print(f"✅ Vectorstore saved at {VECTORSTORE_FILE}")
 
 # --------------------------
-# MAIN
+# MAIN EXECUTION
 # --------------------------
 if __name__ == "__main__":
-    print("🔄 Loading documents and generating embeddings...")
+    print("🔄 Starting RAG pipeline...")
 
     documents = load_and_split_documents()
     embeddings_model = HuggingFaceEmbeddings(
@@ -65,5 +70,6 @@ if __name__ == "__main__":
         cache_folder=EMBEDDING_CACHE_DIR
     )
     embeddings = embed_documents(documents, embeddings_model)
-
     save_vectorstore(embeddings, documents)
+
+    print("🏁 RAG vectorstore build complete.")

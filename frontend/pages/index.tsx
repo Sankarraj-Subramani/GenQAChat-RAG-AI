@@ -16,10 +16,11 @@ export default function Home() {
     setLoading(true);
 
     try {
-      const res = await fetch('https://literate-space-pancake-97wxjg9v5xxv37w66-8000.app.github.dev/query', {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+      const res = await fetch(`${backendUrl}/api/ask`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question }),
+        body: JSON.stringify({ query: question }),
       });
 
       if (!res.ok) throw new Error(`Server responded with status ${res.status}`);
