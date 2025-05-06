@@ -1,6 +1,11 @@
 {
-  "name": "Python 3",
+  "name": "Python 3 + Node.js",
   "image": "mcr.microsoft.com/devcontainers/python:1-3.11-bullseye",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "18"
+    }
+  },
   "customizations": {
     "codespaces": {
       "openFiles": [
@@ -17,16 +22,19 @@
     }
   },
   "updateContentCommand": "pip install -r backend/requirements.txt",
-  "postCreateCommand": "cd frontend && npm install",
-  "postAttachCommand": "uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 & cd frontend && npm run dev",
+  "postCreateCommand": "cd backend && python app/rag_chain.py && cd /workspaces/GenQAChat-RAG-AI/frontend && npm install",
+  "postAttachCommand": "bash -c 'cd /workspaces/GenQAChat-RAG-AI/backend && uvicorn app.main:app --host 0.0.0.0 --port 8000 & sleep 5 && cd /workspaces/GenQAChat-RAG-AI/frontend && npm run dev'",
   "portsAttributes": {
     "8000": {
       "label": "FastAPI Backend",
-      "onAutoForward": "openPreview"
+      "onAutoForward": "openPreview",
+      "visibility": "public"
     },
     "3000": {
       "label": "Next.js Frontend",
-      "onAutoForward": "openPreview"
+      "onAutoForward": "openPreview",
+      "visibility": "public"
+
     }
   },
   "forwardPorts": [8000, 3000]
