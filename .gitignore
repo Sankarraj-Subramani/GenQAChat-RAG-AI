@@ -2,7 +2,6 @@
 # Ignore build artifacts
 frontend/.next/
 backend/app/__pycache__/
-vectorstore.pkl
 models/
 node_modules/
 .next/
