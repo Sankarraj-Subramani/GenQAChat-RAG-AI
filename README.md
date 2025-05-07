@@ -174,7 +174,7 @@ If not already public, run this in terminal:
 
 ```bash
 ./make_ports_public.sh
----
+```
 
 ## 🇺🇸 EB2-NIW Relevance
 
