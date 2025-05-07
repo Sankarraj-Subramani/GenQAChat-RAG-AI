@@ -5,8 +5,6 @@ backend/app/__pycache__/
 models/
 node_modules/
 .next/
-models/
-vectorstore.pkl
 __pycache__/
 .DS_Store
 .env
