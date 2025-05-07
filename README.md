@@ -1,15 +1,13 @@
-# README.md
-
 # GenQAChat-RAG-AI
+
+[![Open in Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?template_repository=Sankarraj-Subramani/GenQAChat-RAG-AI)
 
 <p align="center">
   <img src="https://i.postimg.cc/qqp9RSF2/Screenshot-2025-04-25-at-1-28-45-PM.png" alt="GenQAChat Logo" width="200"/>
 </p>
 
-**An AI-Powered Chatbot Assistant for QA Engineers**  
-Created by [Sankarraj Subramani](https://github.com/Sankarraj-Subramani)
-
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?template_repository=Sankarraj-Subramani/GenQAChat-RAG-AI)
+> **Empowering QA Engineers with AI**  
+> A privacy-focused, offline-ready chatbot assistant that delivers instant answers to automation testing questions using open-source embeddings and RAG architecture.
 
 ---
 
@@ -22,6 +20,8 @@ It leverages:
 - **HuggingFace Sentence Transformers** for local embeddings (No OpenAI API needed!)
 - **FAISS VectorStore** for semantic search
 - **FastAPI** backend and **Next.js** frontend
+
+> 🧪 **NIW-Aligned:** Demonstrates scalable, open-source QA innovation for critical infrastructure domains.
 
 ---
 
@@ -101,33 +101,38 @@ npm install
 npm run dev
 ```
 
-### 4. No OpenAI Key Needed
-
-This version uses **local HuggingFace embeddings** — no external API keys required!
-
 ---
 
-## 🪩 Folder Structure
+## 🗂️ Folder Structure
 
-```
+```plaintext
 GenQAChat-RAG-AI/
 ├── backend/
 │   ├── app/
-│   │   ├── main.py
-│   │   └── rag_chain.py
-│   └── requirements.txt
+│   │   ├── main.py              # FastAPI backend with /api/ask endpoint
+│   │   └── rag_chain.py         # Builds vectorstore.pkl from markdowns
+│   └── requirements.txt         # Python dependencies
 ├── frontend/
 │   ├── pages/
-│   │   └── index.tsx
-│   └── ...
+│   │   └── index.tsx            # Next.js UI for asking QA questions
+│   ├── components/              # (Optional) reusable UI components
+│   ├── .env.local               # Contains NEXT_PUBLIC_BACKEND_URL
+│   ├── next.config.js           # Dynamically resolves Codespace backend URL
+│   └── package.json             # React + Tailwind app dependencies
 ├── knowledge_base/
-│   ├── selenium.md
+│   ├── selenium.md              # QA content embedded into FAISS
 │   ├── appium.md
 │   ├── cypress.md
 │   ├── playwright.md
 │   ├── jenkins.md
 │   └── xpaths.md
-└── README.md
+├── models/                      # Optional: HuggingFace cache
+├── vectorstore.pkl              # Serialized FAISS store (auto-generated)
+├── streamlit_app.py             # Streamlit UI for QA chatbot (optional deployment)
+├── make_ports_public.sh         # CLI script to expose ports on Codespaces
+├── devcontainer.json            # GitHub Codespaces automation config
+└── README.md                    # Project overview and instructions
+
 ```
 
 ---
@@ -156,18 +161,27 @@ These markdown files are **embedded into FAISS** for real-time QA answering.
 
 ---
 
-## 🏆 Contributions
+## 🏆 Hackathon Submission
 
-Contributions are welcome!
-- Add new knowledge base markdowns
-- Improve UI/UX
-- Suggest features like multiple file uploads, authentication
+**Event:** Code for Change: AI Hackathon 2025  
+**Category:** Ethical AI & Bias Mitigation / Social Good  
+**Public Repo:** [github.com/Sankarraj-Subramani/GenQAChat-RAG-AI](https://github.com/Sankarraj-Subramani/GenQAChat-RAG-AI)
 
 ---
+### 📢 Final Step (Auto-Public Port Setup)
 
-## 📄 License
+If not already public, run this in terminal:
 
-Distributed under the MIT License. See `LICENSE` for more information.
+```bash
+./make_ports_public.sh
+---
+
+## 🇺🇸 EB2-NIW Relevance
+
+This project supports the U.S. national interest by:
+- Enabling **secure, ethical automation** for healthcare, aviation, and public-sector QA.
+- Providing **open-source QA intelligence** for underserved developers.
+- Promoting **bias-free, reproducible testing guidance** using local LLMs.
 
 ---
 
@@ -177,8 +191,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 QA Automation Lead | AI/ML Enthusiast | EB2-NIW/EB1A Aspirant  
 [GitHub](https://github.com/Sankarraj-Subramani) • [LinkedIn](https://www.linkedin.com/in/sankarraj-subramani-34254757)
 
-> If you like this project, kindly star the repo and share with the QA + AI community! ⭐
-
-
----
-
+> ⭐ If you like this project, kindly star the repo and share with the QA + AI community!
