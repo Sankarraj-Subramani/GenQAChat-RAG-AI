@@ -1,26 +1,19 @@
-# Core server
 fastapi==0.110.1
 uvicorn==0.29.0
 
-# LangChain ecosystem
 langchain==0.1.14
 langchain-community==0.0.30
 langchain-openai==0.1.6
 
-# OpenAI + Tokenizer
 openai==1.26.0
 tiktoken==0.6.0
 
-# Environment variables
 python-dotenv==1.0.1
 
-# ✅ Local Embeddings Support
 sentence-transformers==2.7.0
-scikit-learn==1.4.2   # ✅ Added for Cosine Similarity
+scikit-learn==1.4.2
 
-# ✅ Markdown Parsing Support
 unstructured[markdown]==0.11.6
 markdown==3.5.2
 
-# ✅ NLTK for Sentence Tokenization
 nltk==3.8.1
