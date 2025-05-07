@@ -131,7 +131,9 @@ GenQAChat-RAG-AI/
 ├── streamlit_app.py             # Streamlit UI for QA chatbot (optional deployment)
 ├── make_ports_public.sh         # CLI script to expose ports on Codespaces
 ├── devcontainer.json            # GitHub Codespaces automation config
+├── requirements.txt             # Streamlit related requirements files
 └── README.md                    # Project overview and instructions
+
 
 ```
 
