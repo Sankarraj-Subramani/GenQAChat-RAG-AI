@@ -10,25 +10,29 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 # --------------------------
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 VECTORSTORE_FILE = os.path.join(ROOT_DIR, "vectorstore.pkl")
-EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
-EMBEDDING_CACHE_DIR = os.path.join(ROOT_DIR, "models")
+EMBEDDING_MODEL_PATH = os.path.join(ROOT_DIR, "models", "all-MiniLM-L6-v2")
 
 # --------------------------
 # LOAD VECTORSTORE + EMBEDDINGS
 # --------------------------
-@st.cache_resource(show_spinner="🔄 Loading embeddings...")
+@st.cache_resource(show_spinner="🔄 Loading local embeddings and vectorstore...")
 def load_vectorstore():
     if not os.path.exists(VECTORSTORE_FILE):
-        st.error("❗ vectorstore.pkl not found. Please run backend/app/rag_chain.py to generate it.")
+        st.error("❗ vectorstore.pkl not found. Please run `backend/app/rag_chain.py` to generate it.")
+        st.stop()
+
+    if not os.path.exists(EMBEDDING_MODEL_PATH):
+        st.error("❗ Local model not found. Please run the model download script to populate ./models/all-MiniLM-L6-v2")
         st.stop()
 
     with open(VECTORSTORE_FILE, "rb") as f:
         stored_embeddings, stored_documents = pickle.load(f)
 
     embeddings_model = HuggingFaceEmbeddings(
-        model_name=EMBEDDING_MODEL_NAME,
-        cache_folder=EMBEDDING_CACHE_DIR
+        model_name=EMBEDDING_MODEL_PATH,
+        cache_folder=EMBEDDING_MODEL_PATH
     )
+
     return stored_embeddings, stored_documents, embeddings_model
 
 stored_embeddings, stored_documents, embeddings_model = load_vectorstore()
@@ -45,7 +49,7 @@ with st.form("ask_form"):
     submit = st.form_submit_button("Ask")
 
 if submit and query:
-    with st.spinner("Generating answer..."):
+    with st.spinner("🔎 Searching for best match..."):
         query_embedding = embeddings_model.embed_query(query)
         similarities = cosine_similarity([query_embedding], stored_embeddings)[0]
         top_index = int(np.argmax(similarities))
