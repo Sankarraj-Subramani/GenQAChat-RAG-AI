@@ -1,4 +1,6 @@
 import streamlit as st
+st.set_page_config(page_title="GenQAChat", page_icon="🤖", layout="centered")
+
 import pickle
 import os
 import numpy as np
@@ -40,7 +42,6 @@ stored_embeddings, stored_documents, embeddings_model = load_vectorstore()
 # --------------------------
 # STREAMLIT UI
 # --------------------------
-st.set_page_config(page_title="GenQAChat", page_icon="🤖", layout="centered")
 st.title("🤖 GenQAChat – AI QA Assistant")
 st.markdown("Ask your **QA automation** question below and get a trusted answer powered by LangChain + local embeddings.")
 
