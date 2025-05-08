@@ -1,10 +1,10 @@
 # GenQAChat-RAG-AI
-
-[![Open in Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?template_repository=Sankarraj-Subramani/GenQAChat-RAG-AI)
+[![Open the output in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://genappchat-rag-ai-izvuchflvg3barx6mhj3xo.streamlit.app/)
 
 <p align="center">
-  <img src="https://i.postimg.cc/qqp9RSF2/Screenshot-2025-04-25-at-1-28-45-PM.png" alt="GenQAChat Logo" width="200"/>
+  <img src="https://drive.google.com/uc?export=view&id=1F7uyMPREOVJzgTOG0pWbX1yYnuGi-P2J" alt="GenQAChat Logo" width="200"/>
 </p>
+
 
 > **Empowering QA Engineers with AI**  
 > A privacy-focused, offline-ready chatbot assistant that delivers instant answers to automation testing questions using open-source embeddings and RAG architecture.
@@ -177,6 +177,7 @@ If not already public, run this in terminal:
 ```bash
 ./make_ports_public.sh
 ```
+[![Open in Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?template_repository=Sankarraj-Subramani/GenQAChat-RAG-AI)
 
 ## 🇺🇸 EB2-NIW Relevance
 
