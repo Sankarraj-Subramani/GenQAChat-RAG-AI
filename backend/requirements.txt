@@ -12,3 +12,5 @@ unstructured[markdown]==0.11.6
 markdown==3.5.2
 nltk==3.8.1
 streamlit==1.34.0
+torch==1.13.1
+

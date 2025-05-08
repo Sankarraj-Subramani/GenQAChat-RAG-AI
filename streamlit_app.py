@@ -1,6 +1,10 @@
-import streamlit as st
+# This patch prevents torch class registration errors on some environments (optional)
+import sys
+if 'torch' in sys.modules:
+    import types
+    sys.modules['torch'].classes = types.SimpleNamespace(_path=[])
 
-# ✅ This must be the very first Streamlit command
+import streamlit as st
 st.set_page_config(page_title="GenQAChat", page_icon="🤖", layout="centered")
 
 import pickle
@@ -9,24 +13,20 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from langchain_community.embeddings import HuggingFaceEmbeddings
 
-# --------------------------
-# CONFIGURATION
-# --------------------------
+# Configuration
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 VECTORSTORE_FILE = os.path.join(ROOT_DIR, "vectorstore.pkl")
 EMBEDDING_MODEL_PATH = os.path.join(ROOT_DIR, "models", "all-MiniLM-L6-v2")
 
-# --------------------------
-# LOAD VECTORSTORE + EMBEDDINGS
-# --------------------------
+# Load embeddings + documents
 @st.cache_resource(show_spinner="🔄 Loading local embeddings and vectorstore...")
 def load_vectorstore():
     if not os.path.exists(VECTORSTORE_FILE):
-        st.error("❗ vectorstore.pkl not found. Please run `backend/app/rag_chain.py` to generate it.")
+        st.error("❗ `vectorstore.pkl` not found. Please run `backend/app/rag_chain.py` to generate it.")
         st.stop()
 
     if not os.path.exists(EMBEDDING_MODEL_PATH):
-        st.error("❗ Local model not found. Please run the model download script to populate ./models/all-MiniLM-L6-v2")
+        st.error("❗ Local model not found. Run the download script to populate ./models/all-MiniLM-L6-v2.")
         st.stop()
 
     with open(VECTORSTORE_FILE, "rb") as f:
@@ -36,14 +36,11 @@ def load_vectorstore():
         model_name=EMBEDDING_MODEL_PATH,
         cache_folder=EMBEDDING_MODEL_PATH
     )
-
     return stored_embeddings, stored_documents, embeddings_model
 
 stored_embeddings, stored_documents, embeddings_model = load_vectorstore()
 
-# --------------------------
-# STREAMLIT UI
-# --------------------------
+# Streamlit UI
 st.title("🤖 GenQAChat – AI QA Assistant")
 st.markdown("Ask your **QA automation** question below and get a trusted answer powered by LangChain + local embeddings.")
 
