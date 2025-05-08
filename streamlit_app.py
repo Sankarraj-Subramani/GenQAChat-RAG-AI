@@ -1,4 +1,6 @@
 import streamlit as st
+
+# ✅ This must be the very first Streamlit command
 st.set_page_config(page_title="GenQAChat", page_icon="🤖", layout="centered")
 
 import pickle
