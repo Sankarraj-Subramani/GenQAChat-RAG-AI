@@ -17,27 +17,31 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 VECTORSTORE_FILE = os.path.join(ROOT_DIR, "vectorstore.pkl")
 EMBEDDING_MODEL_PATH = os.path.join(ROOT_DIR, "models", "all-MiniLM-L6-v2")
+SAFE_FALLBACK_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 
-# Load embeddings + documents
 @st.cache_resource(show_spinner="🔄 Loading local embeddings and vectorstore...")
 def load_vectorstore():
     if not os.path.exists(VECTORSTORE_FILE):
         st.error("❗ `vectorstore.pkl` not found. Please run `backend/app/rag_chain.py` to generate it.")
         st.stop()
 
-    if not os.path.exists(EMBEDDING_MODEL_PATH):
-        st.error("❗ Local model not found. Run the download script to populate ./models/all-MiniLM-L6-v2.")
-        st.stop()
-
+    # Load stored embeddings and documents
     with open(VECTORSTORE_FILE, "rb") as f:
         stored_embeddings, stored_documents = pickle.load(f)
 
-    embeddings_model = HuggingFaceEmbeddings(
-        model_name=EMBEDDING_MODEL_PATH,
-        cache_folder=EMBEDDING_MODEL_PATH
-    )
+    try:
+        # Try loading local model (may break if config has 'include_prompt')
+        embeddings_model = HuggingFaceEmbeddings(
+            model_name=EMBEDDING_MODEL_PATH,
+            cache_folder=EMBEDDING_MODEL_PATH
+        )
+    except TypeError as e:
+        st.warning(f"⚠️ Local model may be incompatible: {e}. Falling back to safe online model.")
+        embeddings_model = HuggingFaceEmbeddings(model_name=SAFE_FALLBACK_MODEL)
+
     return stored_embeddings, stored_documents, embeddings_model
 
+# Load everything
 stored_embeddings, stored_documents, embeddings_model = load_vectorstore()
 
 # Streamlit UI
